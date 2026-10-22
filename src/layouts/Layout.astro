@@ -1,0 +1,60 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Bryan Ramírez — IT & independent projects',
+  description = 'IT by profession. Builder by curiosity. Bryan Ramírez’s portfolio: experience in IT operations and independent software, including Vox0, offline dictation for Windows.',
+} = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  url: canonicalURL.href,
+  mainEntity: {
+    '@type': 'Person',
+    name: 'Bryan Ramírez',
+    url: 'https://barp.me',
+    jobTitle: 'IT Assistant',
+    worksFor: { '@type': 'Organization', name: 'andBeyond Travel' },
+    sameAs: [
+      'https://github.com/bryramirezp',
+      'https://www.linkedin.com/in/bryramirezp/',
+    ],
+  },
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="barp.me" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={new URL('/social-preview.png', Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Bryan Ramírez — IT by profession. Builder by curiosity. barp.me" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot />
+  </body>
+</html>
