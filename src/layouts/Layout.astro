@@ -1,6 +1,7 @@
 ---
 import '@fontsource-variable/inter';
 import '@fontsource/ibm-plex-mono/latin-400.css';
+import interFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import '../styles/global.css';
 
 interface Props {
@@ -9,25 +10,48 @@ interface Props {
 }
 
 const {
-  title = 'Bryan Ramírez — IT & independent projects',
-  description = 'IT by profession. Builder by curiosity. Bryan Ramírez’s portfolio: experience in IT operations and independent software, including Vox0, offline dictation for Windows.',
+  title = 'Bryan Ramírez | IT Support & Software Projects',
+  description = 'Bryan Ramírez’s portfolio: IT support and operations in South America, plus independent software projects like Vox0, free offline dictation for Windows.',
 } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const siteURL = new URL('/', Astro.site);
+const personID = new URL('#bryan-ramirez', siteURL).href;
+const websiteID = new URL('#website', siteURL).href;
 const structuredData = {
   '@context': 'https://schema.org',
-  '@type': 'ProfilePage',
-  url: canonicalURL.href,
-  mainEntity: {
-    '@type': 'Person',
-    name: 'Bryan Ramírez',
-    url: 'https://barp.me',
-    jobTitle: 'IT Assistant',
-    worksFor: { '@type': 'Organization', name: 'andBeyond Travel' },
-    sameAs: [
-      'https://github.com/bryramirezp',
-      'https://www.linkedin.com/in/bryramirezp/',
-    ],
-  },
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': websiteID,
+      url: siteURL.href,
+      name: 'barp.me',
+      alternateName: 'Bryan Ramírez',
+      inLanguage: 'en',
+      publisher: { '@id': personID },
+    },
+    {
+      '@type': 'ProfilePage',
+      '@id': new URL('#profile', canonicalURL).href,
+      url: canonicalURL.href,
+      name: title,
+      description,
+      inLanguage: 'en',
+      isPartOf: { '@id': websiteID },
+      mainEntity: { '@id': personID },
+    },
+    {
+      '@type': 'Person',
+      '@id': personID,
+      name: 'Bryan Ramírez',
+      url: siteURL.href,
+      jobTitle: 'IT Assistant',
+      worksFor: { '@type': 'Organization', name: 'andBeyond Travel' },
+      sameAs: [
+        'https://github.com/bryramirezp',
+        'https://www.linkedin.com/in/bryramirezp/',
+      ],
+    },
+  ],
 };
 ---
 
@@ -38,10 +62,13 @@ const structuredData = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#ffffff" />
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href={canonicalURL} />
+    <link rel="preload" href={interFont} as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="barp.me" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
@@ -50,6 +77,10 @@ const structuredData = {
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Bryan Ramírez — IT by profession. Builder by curiosity. barp.me" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('/social-preview.png', Astro.site)} />
+    <meta name="twitter:image:alt" content="Bryan Ramírez — IT by profession. Builder by curiosity. barp.me" />
     <title>{title}</title>
     <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
   </head>
